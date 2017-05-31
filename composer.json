@@ -11,7 +11,7 @@
 	],
 	"require": {
 		"php": ">=5.5.0",
-		"nette/robot-loader": "2.4.*",
+		"nette/robot-loader": "3.*",
 		"nette/utils": "2.4.*",
 		"nette/reflection": "2.4.*"
 	},
