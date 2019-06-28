@@ -7,6 +7,8 @@ use MailQ\Entities\BaseEntity;
 /**
  * @property integer $id
  * @property \DateTime $undelivered
+ * @property string $postfixMessage 
+ * @property \DateTime $openedTimestamp
  * @property string $recipientEmail
  * @property string $replyToEmail
  * @property array $bcc
@@ -29,6 +31,18 @@ class NotificationDataEntity extends BaseEntity {
      * @var \DateTime
      */
     private $undelivered;
+    /**
+     * @in
+     * @out
+     * @var string 
+     */
+    private $postfixMessage;   
+    /**
+     * @in openedTimestamp
+     * @out openedTimestamp
+     * @var \DateTime
+     */
+    private $opened;   
     /**
      * @in
      * @out
@@ -98,9 +112,44 @@ class NotificationDataEntity extends BaseEntity {
             return null;
         }
     }
+   
 
     public function getUndeliveredAsDateTime() {
         return $this->undelivered;
+    }   
+   
+    /**
+     * @param string $postfixMessage
+     * @return NotificationDataEntity
+     */
+    public function setPostfixMessage($postfixMessage)
+    {
+        $this->postfixMessage = $postfixMessage;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPostfixMessage()
+    {
+        return $this->postfixMessage;
+    }   
+   
+    /**
+     * @return null|string
+     */
+    public function getOpened()
+    {
+        if ($this->opened != null) {
+            return $this->opened->format(DATE_ATOM);
+        } else {
+            return null;
+        }
+    }   
+
+    public function getOpenedAsDateTime() {
+        return $this->opened;
     }
 
     /**
@@ -116,6 +165,20 @@ class NotificationDataEntity extends BaseEntity {
         }
         return $this;
     }
+   
+    /**
+     * @param $undelivered
+     * @return NotificationDataEntity
+     */
+    public function setOpened($opened)
+    {
+        if (is_string($opened)) {
+            $this->opened = \DateTime::createFromFormat(DATE_ATOM, $opened);
+        } elseif ($opened instanceof \DateTime) {
+            $this->opened = $opened;
+        }
+        return $this;
+    }   
 
 
     /**
