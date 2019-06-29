@@ -8,7 +8,7 @@ use MailQ\Entities\BaseEntity;
  * @property integer $id
  * @property \DateTime $undelivered
  * @property string $postfixMessage 
- * @property \DateTime $openedTimestamp
+ * @property \DateTime $opened
  * @property string $recipientEmail
  * @property string $replyToEmail
  * @property array $bcc
