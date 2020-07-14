@@ -151,7 +151,7 @@ class Connector
             if ($errorData->message === 'Invalid recipient email.') {
                 throw new InvalidEmailAddressException($errorData->message, isset($errorData->code) ? $errorData->code : 0);
             } else {
-                throw new MailQException($errorData->message . $errorData->note, isset($errorData->code) ? $errorData->code : 0);
+                throw new MailQException($errorData->message . (isset($errorData->note) ? $errorData->note : ''), isset($errorData->code) ? $errorData->code : 0);
             }
         }
     }
