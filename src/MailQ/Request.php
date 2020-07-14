@@ -144,7 +144,7 @@ class Request
      */
     static function post($path, $parameters = null, $headers = null, Entities\BaseEntity $content = null)
     {
-        return self::createRequest(self::HTTP_METHOD_POST, $path, $headers, $parameters, $content);
+        return self::createRequest(self::HTTP_METHOD_POST, $path, $parameters, $headers, $content);
     }
 
     /**
@@ -156,7 +156,7 @@ class Request
      */
     static function put($path, $parameters = null, $headers = null, Entities\BaseEntity $content = null)
     {
-        return self::createRequest(self::HTTP_METHOD_PUT, $path, $headers, $parameters, $content);
+        return self::createRequest(self::HTTP_METHOD_PUT, $path, $parameters, $headers, $content);
     }
 
     /**
@@ -168,7 +168,7 @@ class Request
      */
     static function patch($path, $parameters = null, $headers = null, Entities\BaseEntity $content = null)
     {
-        return self::createRequest(self::HTTP_METHOD_PATCH, $path, $headers, $parameters, $content);
+        return self::createRequest(self::HTTP_METHOD_PATCH, $path, $parameters, $headers, $content);
     }
 
     /**
