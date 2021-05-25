@@ -55,12 +55,15 @@ class Request
 
     function setParameters($parameters)
     {
-	    foreach ($parameters as $key => $parameter) {
-		    if (is_bool($parameter)) {
-			    $parameters[$key] = $parameter ? 'true' : 'false';
-		    }
-	    }
-        $this->parameters = $parameters;
+        if (is_iterable($parameters)) {
+            foreach ($parameters as $key => $parameter) {
+                if (is_bool($parameter)) {
+                    $parameters[$key] = $parameter ? 'true' : 'false';
+                }
+            }
+
+            $this->parameters = $parameters;
+        }
     }
 
     function getHeaders()
