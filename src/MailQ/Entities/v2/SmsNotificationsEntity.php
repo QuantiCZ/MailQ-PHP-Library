@@ -14,7 +14,7 @@ class SmsNotificationsEntity extends BaseEntity
 	/**
 	 * @in
 	 * @out
-	 * @var SmsNotificationEntity
+	 * @var SmsNotificationEntity[]
 	 * @collection
 	 */
 	private $smsNotifications;

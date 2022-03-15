@@ -648,7 +648,7 @@ class NewsletterEntity extends BaseEntity {
 
 
 	/**
-	 * @return string
+	 * @return TagEntity[]
 	 */
 	public function getTags()
 	{

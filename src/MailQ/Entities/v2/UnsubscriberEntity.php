@@ -47,7 +47,8 @@ class UnsubscriberEntity extends BaseEntity
 	/**
 	 * @in
 	 * @out
-	 * @var LinkEntity
+	 * @var LinkEntity[]
+	 * @collection
 	 */
 	private $recipientsList;
 

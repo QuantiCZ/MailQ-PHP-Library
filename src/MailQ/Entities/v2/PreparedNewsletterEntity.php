@@ -387,7 +387,7 @@ class PreparedNewsletterEntity extends BaseEntity {
 	}
 
 	/**
-	 * @return string
+	 * @return TagEntity[]
 	 */
 	public function getTags()
 	{

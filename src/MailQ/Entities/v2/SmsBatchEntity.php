@@ -14,7 +14,7 @@ class SmsBatchEntity extends BaseEntity
 	/**
 	 * @in
 	 * @out
-	 * @var SmsEntity
+	 * @var SmsEntity[]
 	 * @collection
 	 */
 	private $batch;
