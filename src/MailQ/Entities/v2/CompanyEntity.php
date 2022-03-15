@@ -70,7 +70,7 @@ class CompanyEntity extends BaseEntity
 
 	/**
 	 * @in
-	 * @out
+	 * @out recipientLists
 	 * @var LinkEntity[]
 	 * @collection
 	 */

@@ -14,7 +14,7 @@ class NotificationsEntity extends BaseEntity
 	/**
 	 * @in
 	 * @out
-	 * @var NotificationEntity
+	 * @var NotificationEntity[]
 	 * @collection
 	 */
 	private $notifications;

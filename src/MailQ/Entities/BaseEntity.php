@@ -2,7 +2,6 @@
 
 namespace MailQ\Entities;
 
-use Nette\Reflection\ClassType;
 use Nette\SmartObject;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -13,7 +12,6 @@ class BaseEntity {
     use SmartObject;
 
     const INVERT_NAMES = true;
-
     /**
      * @var ArrayHash
      */
@@ -25,8 +23,9 @@ class BaseEntity {
      * @param bool $inverse
      * @throws \Nette\Utils\JsonException
      */
-    public function __construct($data = NULL, $inverse = false) {
-        if ($data !== null) {
+    public function __construct($data = null, $inverse = false)
+    {
+        if (!is_null($data)) {
             if (is_string($data)) {
                 $data = Json::decode($data);
             }
@@ -35,17 +34,17 @@ class BaseEntity {
                 if ($value instanceof \stdClass) {
                     $value = (array) $value;
                 }
-                $reflection = new ClassType($this);
+                $reflection = new \ReflectionClass($this);
                 if ($this->attributeNames->offsetExists($key)) {
                     $propertyName = $this->attributeNames->offsetGet($key);
                     if ($reflection->hasProperty($propertyName)) {
                         $property = $reflection->getProperty($propertyName);
-                        $type = $property->getAnnotation('var');
+                        $type = $this->getValueFromAnnotation($property, 'var');
                         if (Strings::endsWith($type, 'Entity') || Strings::endsWith($type, 'Entity[]')) {
-                            $className = Strings::replace($type,'~\\[\\]~i');
-                            $classWithNamespace = sprintf("\\%s\\%s", $reflection->getNamespaceName(), (string) $className);
-                            if (is_array($value) && $property->hasAnnotation('collection')) {
-                                $arrayData = array();
+                            $className = Strings::replace($type, '~\\[\\]~i');
+                            $classWithNamespace = sprintf("\\%s\\%s", $reflection->getNamespaceName(), $className);
+                            if (is_array($value) && $this->hasAnnotation($property, 'collection')) {
+                                $arrayData = [];
                                 foreach ($value as $valueData) {
                                     $arrayData[] = new $classWithNamespace($valueData, $inverse);
                                 }
@@ -70,12 +69,12 @@ class BaseEntity {
      */
     private function initMapping($mapping) {
         $this->attributeNames = new ArrayHash();
-        $reflection = new ClassType($this);
+        $reflection = new \ReflectionClass($this);
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
-            if ($property->hasAnnotation($mapping)) {
-                $annotation = $property->getAnnotation($mapping);
-                if (is_string($annotation)) {
+            if ($this->hasAnnotation($property, $mapping)) {
+                $annotation = $this->getValueFromAnnotation($property, $mapping);
+                if (!empty($annotation)) {
                     $this->attributeNames[$annotation] = $property->getName();
                 } else {
                     $this->attributeNames[$property->getName()] = $property->getName();
@@ -85,30 +84,30 @@ class BaseEntity {
     }
 
     public function toArray($inverse = false) {
-        $data = array();
+        $data = [];
         $mapping = $inverse ? 'in' : 'out';
-        $reflection = new ClassType($this);
+        $reflection = new \ReflectionClass($this);
         $properties = $reflection->getProperties();
         foreach ($properties as $key => $property) {
-            if ($property->hasAnnotation($mapping)) {
+            if ($this->hasAnnotation($property, $mapping)) {
                 $propertyName = $property->getName();
-                $annotation = $property->getAnnotation($mapping);
-                if (is_string($annotation)) {
+                $annotation = $this->getValueFromAnnotation($property, $mapping);
+                if (!empty($annotation)) {
                     $outputName = $annotation;
                 } else {
                     $outputName = $property->getName();
                 }
                 $value = $this->$propertyName;
-                if ($value instanceof BaseEntity) {
-                    $data[$outputName] = $value->toArray($inverse);
-                } else if (is_array($value) && $property->hasAnnotation('collection')) {
-                    $array = array();
+                if (is_array($value) && $this->hasAnnotation($property, 'collection')) {
+                    $array = [];
                     foreach ($value as $item) {
                         if ($item instanceof BaseEntity) {
                             $array[] = $item->toArray($inverse);
                         }
                     }
                     $data[$outputName] = $array;
+                } else if ($value instanceof BaseEntity) {
+                    $data[$outputName] = $value->toArray($inverse);
                 } else if ($value !== NULL) {
                     $data[$outputName] = $value;
                 }
@@ -121,4 +120,31 @@ class BaseEntity {
         }
     }
 
+    protected function hasAnnotation(\ReflectionProperty $property, string $annotation): bool
+    {
+        $docs = $property->getDocComment();
+
+        $value = preg_match("/@$annotation/", $docs);
+
+        return !!$value;
+    }
+
+    protected function getValueFromAnnotation(\ReflectionProperty $property, string $annotation): ?string
+    {
+        $docs = $property->getDocComment();
+
+        if (!$this->hasAnnotation($property, $annotation)) {
+            return null;
+        }
+
+        $pattern = "/@$annotation?(\s+)?([a-z|A-Z|\[|\]]+)/";
+
+        $matches = Strings::match($docs, $pattern);
+
+        $value = array_shift($matches);
+
+        $value = str_replace("@$annotation", "", $value);
+
+        return trim($value);
+    }
 }

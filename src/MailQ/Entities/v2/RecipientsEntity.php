@@ -14,7 +14,7 @@ class RecipientsEntity extends BaseEntity
 	/**
 	 * @in
 	 * @out
-	 * @var RecipientEntity
+	 * @var RecipientEntity[]
 	 * @collection
 	 */
 	private $recipients;
